@@ -145,7 +145,7 @@ EmailGW:
     EmailHandler:
         pathEmailList: E:\PROJECT\PROVISIONING\master\target\test.txt
         host: mail.viettel.com.vn
-        user: ssss
+        user: tad_antifraud@viettel.com.vn
         pass: xxxxx
 
 
