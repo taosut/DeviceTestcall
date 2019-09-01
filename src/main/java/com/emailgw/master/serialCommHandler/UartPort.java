@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class UartPort implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(UartPort.class);
-    private int PortNumber;
+    public int PortNumber;
     public SerialPort comPort;
     public String IMEI;
 
@@ -65,8 +65,7 @@ public class UartPort implements Serializable {
         }else{
             logger.debug("Cannot Disable Echo for Port :{}",PortNumber);
         };
-        serialHandler listener = new serialHandler(this.PortNumber);
-        this.comPort.addDataListener(listener);
+
         this.IMEI = decodeImei(this.SendCommand("AT+CGSN"));
         logger.debug("IMEI PORT{} {} = {}",PortNumber,comPort.getDescriptivePortName(),IMEI);
     }

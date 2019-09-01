@@ -43,6 +43,12 @@ public class SerialManager {
             if(uartPort.IMEI!=null) {
                 if(!addToList(uartPort)){
                     uartPort.closePort();
+                }else{
+                    if(uartPort.SendATCommand("at+cusd=1;")){
+                        logger.warn("Enable USSD for port {}",uartPort.PortNumber);
+                    };
+                    serialHandler listener = new serialHandler(uartPort.PortNumber);
+                    uartPort.comPort.addDataListener(listener);
                 }
             }
         }
