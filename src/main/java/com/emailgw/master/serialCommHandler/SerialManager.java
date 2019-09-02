@@ -57,6 +57,8 @@ public class SerialManager {
         logger.info("Init Complete");
     }
 
+
+
     @Scheduled(fixedRate = 3600, initialDelay = 18000) // 3600 seconds
     public void healcheckPort(){
         SerialPort[] listport =  SerialPort.getCommPorts();

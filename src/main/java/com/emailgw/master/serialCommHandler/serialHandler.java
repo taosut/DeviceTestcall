@@ -8,6 +8,7 @@ import com.fazecast.jSerialComm.SerialPortMessageListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
@@ -19,6 +20,8 @@ public class serialHandler implements SerialPortMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(EmailHandler.class);
     private int portnum;
 
+    @Autowired
+    public SerialManager serialManager;
 
     @Override
     public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_RECEIVED; }
@@ -33,16 +36,13 @@ public class serialHandler implements SerialPortMessageListener {
     public void serialEvent(SerialPortEvent event)
     {
         byte[] delimitedMessage = event.getReceivedData();
+        logger.warn("Hex String = {}",toHexString(delimitedMessage));
         String out = convertBuffer(delimitedMessage,delimitedMessage.length);
-        logger.warn("Received data from port: {} size {}, mess: {}: ",portnum,delimitedMessage.length,out);
-        logger.warn("UDSSD: {}",decodeUSSD2(out));
-//        byte[] ussdHex = decodeUSSD2(out);
-//        logger.warn("USSD hex = {}",toHexString(ussdHex));
-//        try {
-//            logger.warn("USSD String = {}",ucs2ToUTF8(ussdHex));
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
+
+        if(out.length() > 0) {
+            logger.warn("Received data from port: {} size {}, mess: {}: ", portnum, delimitedMessage.length, out);
+            logger.warn("UDSSD: {}", decodeUSSD(out));
+        }
     }
 
     public serialHandler (int portnum){
@@ -55,7 +55,7 @@ public class serialHandler implements SerialPortMessageListener {
         for (int i = 0; i <len; ++i){
             ret += (char) buff[i];
         }
-        return ret.replaceAll("\\r", "").replaceAll("\\n", "").replaceAll("OK", "");
+        return ret.replace(String.valueOf((char)0x0D), "").replace(String.valueOf((char)0x0A), "").replace("OK", "");
     }
 
     public byte[] decodeUSSD(String input){
@@ -69,6 +69,7 @@ public class serialHandler implements SerialPortMessageListener {
             logger.warn("group0 {}",m.group(0));
             return toByteArray( m.group(1));
         }else{
+            logger.warn("NOT MATCH");
             return null;
         }
     }

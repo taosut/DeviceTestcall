@@ -51,6 +51,13 @@ public class UartPort implements Serializable {
         return returnMess;
     }
 
+    public void SendUBCommand(String at) {
+        logger.debug("Send Command {}",at);
+        String send = at + (char)0x0D + (char)0x0A;
+        byte[] send_byte = send.getBytes();
+        this.comPort.writeBytes(send_byte,at.length()+2);
+    }
+
     public String convertBuffer(byte[]buff, int len){
         String ret = "";
         for (int i = 0; i <len; ++i){

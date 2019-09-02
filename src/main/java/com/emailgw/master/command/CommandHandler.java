@@ -29,7 +29,14 @@ public class CommandHandler {
     public void makeCall(String imei, String Called){
         for (UartPort port: serialManager.uartPorts){
             if(Objects.equals(port.IMEI,imei)){
-                port.SendCommand("ATD"+Called+";");
+                port.SendUBCommand("ATD"+Called+";");
+            }
+        }
+    }
+    public void dropCall(String imei){
+        for (UartPort port: serialManager.uartPorts){
+            if(Objects.equals(port.IMEI,imei)){
+                port.SendUBCommand("AT+CHUP");
             }
         }
     }
